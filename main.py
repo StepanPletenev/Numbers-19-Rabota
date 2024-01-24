@@ -1,46 +1,35 @@
 import pygame
 import random
-
-# Инициализация Pygame
 pygame.init()
 
-# Определение цветов
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GRAY = (128, 128, 128)
 
-# Определение размеров экрана
 WIDTH = 600
 HEIGHT = 600
 
-# Создание окна
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Чиселки")
 
-# Создание шрифта
 font = pygame.font.SysFont(None, 36)
 
-# Создание списка чисел
 numbers = []
 for i in range(10):
     numbers.append(str(i))
 
-# Создание списка строк
 lines = []
 for i in range(10):
     line = ""
     for j in range(10):
         line += random.choice(numbers)
     lines.append(line)
-
-# Функция для отображения текста на экране
 def draw_text(text, font, color, x, y):
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
     text_rect.center = (x, y)
     screen.blit(text_surface, text_rect)
 
-# Функция для отображения игрового поля
 def draw_board():
     for i in range(10):
         for j in range(10):
@@ -48,7 +37,6 @@ def draw_board():
                 pygame.draw.rect(screen, GRAY, [j * 50, i * 50, 50, 50])
                 draw_text(lines[i][j], font, WHITE, j * 50 + 25, i * 50 + 25)
 
-# Функция для проверки возможности вычеркивания числа
 def can_remove(x1, y1, x2, y2):
     if x1 == x2:
         for i in range(min(y1, y2), max(y1, y2) + 1):
@@ -63,7 +51,6 @@ def can_remove(x1, y1, x2, y2):
     else:
         return False
 
-# Функция для вычеркивания числа
 def remove_numbers(x1, y1, x2, y2):
     if x1 == x2:
         for i in range(min(y1, y2), max(y1, y2) + 1):
@@ -72,11 +59,9 @@ def remove_numbers(x1, y1, x2, y2):
         for i in range(min(x1, x2), max(x1, x2) + 1):
             lines[i] = lines[i][:y1] + " " + lines[i][y1+1:]
 
-# Основной игровой цикл
 running = True
 while running:
 
-    # Обработка событий
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
@@ -95,11 +80,9 @@ while running:
                     remove_numbers(x, y, x-1, y+1)
                     remove_numbers(x, y, x+1, y-1)
 
-    # Отрисовка игрового поля
     screen.fill(WHITE)
     draw_board()
 
-    # Проверка на окончание игры
     game_over = True
     for line in lines:
         if " " not in line:
@@ -108,9 +91,7 @@ while running:
     if game_over:
         draw_text("Вы выиграли!", font, BLACK, WIDTH // 2, HEIGHT // 2)
 
-    # Обновление экрана
-    pygame.display.flip()
+    pygame.display.update()
 
-# Выход из Pygame
 pygame.quit()
 
