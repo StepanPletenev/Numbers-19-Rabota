@@ -1,52 +1,116 @@
 import pygame
 import random
+
+# Инициализация Pygame
 pygame.init()
 
-WINDOW_WIDTH = 800
-WINDOW_HEIGHT = 600
-WINDOW_TITLE = "Чиселки"
-WINDOW_BACKGROUND_COLOR = (255, 255, 255)
+# Определение цветов
+BLACK = (0, 0, 0)
+WHITE = (255, 255, 255)
+GRAY = (128, 128, 128)
 
-NUMBERS_FONT_SIZE = 48
-NUMBERS_COLOR = (0, 0, 0)
-NUMBERS_PADDING = 20
+# Определение размеров экрана
+WIDTH = 600
+HEIGHT = 600
 
-window = pygame.display.set_mode((WINDOW_WIDTH, WINDOW_HEIGHT))
-pygame.display.set_caption(WINDOW_TITLE)
+# Создание окна
+screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Чиселки")
 
-numbers_font = pygame.font.SysFont("Arial", NUMBERS_FONT_SIZE)
+# Создание шрифта
+font = pygame.font.SysFont(None, 36)
 
-numbers = list(range(1, 10))
-random.shuffle(numbers)
+# Создание списка чисел
+numbers = []
+for i in range(10):
+    numbers.append(str(i))
 
-game_over = False
-current_number = 1
+# Создание списка строк
+lines = []
+for i in range(10):
+    line = ""
+    for j in range(10):
+        line += random.choice(numbers)
+    lines.append(line)
 
-while not game_over:
+# Функция для отображения текста на экране
+def draw_text(text, font, color, x, y):
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+    text_rect.center = (x, y)
+    screen.blit(text_surface, text_rect)
+
+# Функция для отображения игрового поля
+def draw_board():
+    for i in range(10):
+        for j in range(10):
+            if lines[i][j] != " ":
+                pygame.draw.rect(screen, GRAY, [j * 50, i * 50, 50, 50])
+                draw_text(lines[i][j], font, WHITE, j * 50 + 25, i * 50 + 25)
+
+# Функция для проверки возможности вычеркивания числа
+def can_remove(x1, y1, x2, y2):
+    if x1 == x2:
+        for i in range(min(y1, y2), max(y1, y2) + 1):
+            if lines[x1][i] == " ":
+                return False
+        return True
+    elif y1 == y2:
+        for i in range(min(x1, x2), max(x1, x2) + 1):
+            if lines[i][y1] == " ":
+                return False
+        return True
+    else:
+        return False
+
+# Функция для вычеркивания числа
+def remove_numbers(x1, y1, x2, y2):
+    if x1 == x2:
+        for i in range(min(y1, y2), max(y1, y2) + 1):
+            lines[x1] = lines[x1][:i] + " " + lines[x1][i+1:]
+    elif y1 == y2:
+        for i in range(min(x1, x2), max(x1, x2) + 1):
+            lines[i] = lines[i][:y1] + " " + lines[i][y1+1:]
+
+# Основной игровой цикл
+running = True
+while running:
+
+    # Обработка событий
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
-            game_over = True
+            running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            mouse_x, mouse_y = event.pos
+            pos = pygame.mouse.get_pos()
+            x = pos[1] // 50
+            y = pos[0] // 50
+            if lines[x][y] != " ":
+                if can_remove(x, y, x, y-1) or can_remove(x, y, x, y+1) or can_remove(x, y, x-1, y) or can_remove(x, y, x+1, y) or can_remove(x, y, x-1, y-1) or can_remove(x, y, x+1, y+1) or can_remove(x, y, x-1, y+1) or can_remove(x, y, x+1, y-1):
+                    remove_numbers(x, y, x, y-1)
+                    remove_numbers(x, y, x, y+1)
+                    remove_numbers(x, y, x-1, y)
+                    remove_numbers(x, y, x+1, y)
+                    remove_numbers(x, y, x-1, y-1)
+                    remove_numbers(x, y, x+1, y+1)
+                    remove_numbers(x, y, x-1, y+1)
+                    remove_numbers(x, y, x+1, y-1)
 
-            if numbers[0] == current_number:
-                current_number += 1
-                numbers.pop(0)
+    # Отрисовка игрового поля
+    screen.fill(WHITE)
+    draw_board()
 
-                if len(numbers) == 0:
-                    game_over = True
-            else:
-                game_over = True
+    # Проверка на окончание игры
+    game_over = True
+    for line in lines:
+        if " " not in line:
+            game_over = False
+            break
+    if game_over:
+        draw_text("Вы выиграли!", font, BLACK, WIDTH // 2, HEIGHT // 2)
 
-    window.fill(WINDOW_BACKGROUND_COLOR)
+    # Обновление экрана
+    pygame.display.flip()
 
-    for i, number in enumerate(numbers):
-        x = (WINDOW_WIDTH - (NUMBERS_FONT_SIZE + NUMBERS_PADDING) * 3) / 2 + i % 3 * (NUMBERS_FONT_SIZE + NUMBERS_PADDING)
-        y = (WINDOW_HEIGHT - (NUMBERS_FONT_SIZE + NUMBERS_PADDING) * 3) / 2 + i // 3 * (NUMBERS_FONT_SIZE + NUMBERS_PADDING)
-
-        number_text = numbers_font.render(str(number), True, NUMBERS_COLOR)
-        window.blit(number_text, (x, y))
-
-    pygame.display.update()
-
+# Выход из Pygame
 pygame.quit()
+
