@@ -12,7 +12,7 @@ WIDTH = 600
 HEIGHT = 600
 
 screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Чиселки")
+pygame.display.set_caption("Чиселки 19")
 
 font = pygame.font.SysFont(None, 36)
 
@@ -49,10 +49,14 @@ def can_remove(x1, y1, x2, y2):
         for i in range(min(y1, y2), max(y1, y2) + 1):
             if lines[x1][i] == " ":
                 return False
+            elif not get_sum(lines[x1][i], lines[x1][y1]):
+                return False
         return True
     elif y1 == y2:
         for i in range(min(x1, x2), max(x1, x2) + 1):
             if lines[i][y1] == " ":
+                return False
+            elif not get_sum(lines[i][y1], lines[x1][y1]):
                 return False
         return True
     else:
@@ -109,4 +113,4 @@ while running:
 
     pygame.display.flip()
 
-pygame.quit()
+pygame.quit()  
