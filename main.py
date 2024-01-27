@@ -1,10 +1,12 @@
 import pygame
 import random
+
 pygame.init()
 
 BLACK = (0, 0, 0)
 WHITE = (255, 255, 255)
 GRAY = (128, 128, 128)
+GREEN = (0, 255, 0)
 
 WIDTH = 600
 HEIGHT = 600
@@ -15,7 +17,7 @@ pygame.display.set_caption("Чиселки")
 font = pygame.font.SysFont(None, 36)
 
 numbers = []
-for i in range(10):
+for i in range(1,10):
     numbers.append(str(i))
 
 lines = []
@@ -24,17 +26,22 @@ for i in range(10):
     for j in range(10):
         line += random.choice(numbers)
     lines.append(line)
+
+
 def draw_text(text, font, color, x, y):
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
     text_rect.center = (x, y)
     screen.blit(text_surface, text_rect)
 
-def draw_board():
+def draw_board(selected_numbers=None):
     for i in range(10):
         for j in range(10):
             if lines[i][j] != " ":
-                pygame.draw.rect(screen, GRAY, [j * 50, i * 50, 50, 50])
+                color = GRAY
+                if selected_numbers and (i, j) in selected_numbers:
+                    color = GREEN
+                pygame.draw.rect(screen, color, [j * 50, i * 50, 50, 50])
                 draw_text(lines[i][j], font, WHITE, j * 50 + 25, i * 50 + 25)
 
 def can_remove(x1, y1, x2, y2):
@@ -59,7 +66,16 @@ def remove_numbers(x1, y1, x2, y2):
         for i in range(min(x1, x2), max(x1, x2) + 1):
             lines[i] = lines[i][:y1] + " " + lines[i][y1+1:]
 
+def get_sum(num1, num2):
+    if num1 == " " or num2 == " ":
+        return False
+    if int(num1) + int(num2) == 10:
+        return True
+    else:
+        return False
+
 running = True
+selected_numbers = []
 while running:
 
     for event in pygame.event.get():
@@ -69,19 +85,19 @@ while running:
             pos = pygame.mouse.get_pos()
             x = pos[1] // 50
             y = pos[0] // 50
-            if lines[x][y] != " ":
-                if can_remove(x, y, x, y-1) or can_remove(x, y, x, y+1) or can_remove(x, y, x-1, y) or can_remove(x, y, x+1, y) or can_remove(x, y, x-1, y-1) or can_remove(x, y, x+1, y+1) or can_remove(x, y, x-1, y+1) or can_remove(x, y, x+1, y-1):
-                    remove_numbers(x, y, x, y-1)
-                    remove_numbers(x, y, x, y+1)
-                    remove_numbers(x, y, x-1, y)
-                    remove_numbers(x, y, x+1, y)
-                    remove_numbers(x, y, x-1, y-1)
-                    remove_numbers(x, y, x+1, y+1)
-                    remove_numbers(x, y, x-1, y+1)
-                    remove_numbers(x, y, x+1, y-1)
+            if len(selected_numbers) == 0:
+                if lines[x][y] != " ":
+                    selected_numbers.append((x, y))
+            elif len(selected_numbers) == 1:
+                if (x, y) != selected_numbers[0]:
+                    if lines[x][y] != " " and (can_remove(selected_numbers[0][0], selected_numbers[0][1], x, y) or get_sum(lines[selected_numbers[0][0]][selected_numbers[0][1]], lines[x][y])):
+                        remove_numbers(selected_numbers[0][0], selected_numbers[0][1], x, y)
+                    selected_numbers.clear()
+            else:
+                selected_numbers.clear()
 
     screen.fill(WHITE)
-    draw_board()
+    draw_board(selected_numbers)
 
     game_over = True
     for line in lines:
@@ -91,7 +107,6 @@ while running:
     if game_over:
         draw_text("Вы выиграли!", font, BLACK, WIDTH // 2, HEIGHT // 2)
 
-    pygame.display.update()
+    pygame.display.flip()
 
 pygame.quit()
-
