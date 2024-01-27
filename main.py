@@ -27,7 +27,6 @@ for i in range(10):
         line += random.choice(numbers)
     lines.append(line)
 
-
 def draw_text(text, font, color, x, y):
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
@@ -78,39 +77,59 @@ def get_sum(num1, num2):
     else:
         return False
 
-running = True
-selected_numbers = []
-while running:
+def main_menu():
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                if 200 <= pos[0] <= 400 and 300 <= pos[1] <= 350:
+                    return
 
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.MOUSEBUTTONDOWN:
-            pos = pygame.mouse.get_pos()
-            x = pos[1] // 50
-            y = pos[0] // 50
-            if len(selected_numbers) == 0:
-                if lines[x][y] != " ":
-                    selected_numbers.append((x, y))
-            elif len(selected_numbers) == 1:
-                if (x, y) != selected_numbers[0]:
-                    if lines[x][y] != " " and (can_remove(selected_numbers[0][0], selected_numbers[0][1], x, y) or get_sum(lines[selected_numbers[0][0]][selected_numbers[0][1]], lines[x][y])):
-                        remove_numbers(selected_numbers[0][0], selected_numbers[0][1], x, y)
+        screen.fill(WHITE)
+        draw_text("Чиселки 19", font, BLACK, WIDTH // 2, HEIGHT // 2 - 100)
+        pygame.draw.rect(screen, GREEN, [200, 300, 200, 50])
+        draw_text("Начать игру", font, BLACK, WIDTH // 2, 325)
+        pygame.display.flip()
+
+def game():
+    running = True
+    selected_numbers = []
+    while running:
+
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                x = pos[1] // 50
+                y = pos[0] // 50
+                if len(selected_numbers) == 0:
+                    if lines[x][y] != " ":
+                        selected_numbers.append((x, y))
+                elif len(selected_numbers) == 1:
+                    if (x, y) != selected_numbers[0]:
+                        if lines[x][y] != " " and (can_remove(selected_numbers[0][0], selected_numbers[0][1], x, y) or get_sum(lines[selected_numbers[0][0]][selected_numbers[0][1]], lines[x][y])):
+                            remove_numbers(selected_numbers[0][0], selected_numbers[0][1], x, y)
+                        selected_numbers.clear()
+                else:
                     selected_numbers.clear()
-            else:
-                selected_numbers.clear()
 
-    screen.fill(WHITE)
-    draw_board(selected_numbers)
+        screen.fill(WHITE)
+        draw_board(selected_numbers)
 
-    game_over = True
-    for line in lines:
-        if " " not in line:
-            game_over = False
-            break
-    if game_over:
-        draw_text("Вы выиграли!", font, BLACK, WIDTH // 2, HEIGHT // 2)
+        game_over = True
+        for line in lines:
+            if " " not in line:
+                game_over = False
+                break
+        if game_over:
+            draw_text("Вы выиграли!", font, BLACK, WIDTH // 2, HEIGHT // 2)
 
-    pygame.display.flip()
+        pygame.display.flip()
 
-pygame.quit()  
+main_menu()
+game()
+pygame.quit()
