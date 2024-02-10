@@ -59,6 +59,10 @@ def can_remove(x1, y1, x2, y2):
                 return False
         return True
     else:
+        sum_positions = get_sum_positions()
+        for pos1, pos2 in sum_positions:
+            if (x1, y1) in pos1 and (x2, y2) in pos2:
+                return True
         return False
 
 def remove_numbers(x1, y1, x2, y2):
@@ -68,9 +72,15 @@ def remove_numbers(x1, y1, x2, y2):
     elif y1 == y2:
         for i in range(min(x1, x2), max(x1, x2) + 1):
             lines[i] = lines[i][:y1] + " " + lines[i][y1+1:]
+    else:
+        sum_positions = get_sum_positions()
+        for pos1, pos2 in sum_positions:
+            if (x1, y1) in pos1 and (x2, y2) in pos2:
+                for x, y in pos1 + pos2:
+                    lines[x] = lines[x][:y] + " " + lines[x][y+1:]
 
 def get_sum(num1, num2):
-    if num1 == " " or num2 == " ":
+    if num1 == '' or num2 =='':
         return False
     if int(num1) + int(num2) == 10:
         return True
@@ -89,7 +99,7 @@ def main_menu():
                     return
 
         screen.fill(WHITE)
-        draw_text("Чиселки 19", font, BLACK, WIDTH // 2, HEIGHT // 2 - 100)
+        draw_text("Чиселки 19", font, BLACK, WIDTH // 2, HEIGHT // 2 -90)
         pygame.draw.rect(screen, GREEN, [200, 300, 200, 50])
         draw_text("Начать игру", font, BLACK, WIDTH // 2, 325)
         pygame.display.flip()
@@ -111,7 +121,9 @@ def game():
                         selected_numbers.append((x, y))
                 elif len(selected_numbers) == 1:
                     if (x, y) != selected_numbers[0]:
-                        if lines[x][y] != " " and (can_remove(selected_numbers[0][0], selected_numbers[0][1], x, y) or get_sum(lines[selected_numbers[0][0]][selected_numbers[0][1]], lines[x][y])):
+                        if lines[x][y] != " " and (
+                                can_remove(selected_numbers[0][0], selected_numbers[0][1], x, y) or get_sum(
+                                lines[selected_numbers[0][0]][selected_numbers[0][1]], lines[x][y])):
                             remove_numbers(selected_numbers[0][0], selected_numbers[0][1], x, y)
                         selected_numbers.clear()
                 else:
