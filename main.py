@@ -33,6 +33,10 @@ def draw_text(text, font, color, x, y):
     text_rect.center = (x, y)
     screen.blit(text_surface, text_rect)
 
+def draw_exit_button():
+    pygame.draw.rect(screen, RED, [200, 400, 200, 50])
+    draw_text("Выход", font, BLACK, WIDTH // 2, 425)
+
 def draw_board(selected_numbers=None):
     for i in range(10):
         for j in range(10):
