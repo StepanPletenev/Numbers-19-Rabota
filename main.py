@@ -11,13 +11,29 @@ GREEN = (0, 255, 0)
 WIDTH = 600
 HEIGHT = 600
 
-screen = pygame.display.set_mode((WIDTH, HEIGHT))
-pygame.display.set_caption("Чиселки 19")
+menu_screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Menu")
+
+def draw_menu():
+    menu_screen.fill(WHITE)
+    draw_text("Numbers 19", font, BLACK, WIDTH // 2, HEIGHT // 2 -90)
+    pygame.draw.rect(menu_screen, GREEN, [200, 300, 200, 50])
+    draw_text("Начать игру", font, BLACK, WIDTH // 2, 325)
+
 
 font = pygame.font.SysFont(None, 36)
 
+def draw_text(text, font, color, x, y):
+    text_surface = font.render(text, True, color)
+    text_rect = text_surface.get_rect()
+    text_rect.center = (x, y)
+    menu_screen.blit(text_surface, text_rect)
+
+game_screen = pygame.display.set_mode((WIDTH, HEIGHT))
+pygame.display.set_caption("Игровое окно")
+
 numbers = []
-for i in range(1,10):
+for i in range(1,9):
     numbers.append(str(i))
 
 lines = []
@@ -26,12 +42,11 @@ for i in range(10):
     for j in range(10):
         line += random.choice(numbers)
     lines.append(line)
-
 def draw_text(text, font, color, x, y):
     text_surface = font.render(text, True, color)
     text_rect = text_surface.get_rect()
     text_rect.center = (x, y)
-    screen.blit(text_surface, text_rect)
+    game_screen.blit(text_surface, text_rect)
 
 def draw_board(selected_numbers=None):
     for i in range(10):
@@ -40,7 +55,7 @@ def draw_board(selected_numbers=None):
                 color = GRAY
                 if selected_numbers and (i, j) in selected_numbers:
                     color = GREEN
-                pygame.draw.rect(screen, color, [j * 50, i * 50, 50, 50])
+                pygame.draw.rect(game_screen, color, [j * 50, i * 50, 50, 50])
                 draw_text(lines[i][j], font, WHITE, j * 50 + 25, i * 50 + 25)
 
 def can_remove(x1, y1, x2, y2):
@@ -87,23 +102,6 @@ def get_sum(num1, num2):
     else:
         return False
 
-def main_menu():
-    while True:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                pygame.quit()
-                quit()
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                if 200 <= pos[0] <= 400 and 300 <= pos[1] <= 350:
-                    return
-
-        screen.fill(WHITE)
-        draw_text("Чиселки 19", font, BLACK, WIDTH // 2, HEIGHT // 2 -90)
-        pygame.draw.rect(screen, GREEN, [200, 300, 200, 50])
-        draw_text("Начать игру", font, BLACK, WIDTH // 2, 325)
-        pygame.display.flip()
-
 def game():
     running = True
     selected_numbers = []
@@ -129,7 +127,7 @@ def game():
                 else:
                     selected_numbers.clear()
 
-        screen.fill(WHITE)
+        game_screen.fill(WHITE)
         draw_board(selected_numbers)
 
         game_over = True
@@ -140,6 +138,20 @@ def game():
         if game_over:
             draw_text("Вы выиграли!", font, BLACK, WIDTH // 2, HEIGHT // 2)
 
+        pygame.display.flip()
+
+def main_menu():
+    while True:
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                pygame.quit()
+                quit()
+            elif event.type == pygame.MOUSEBUTTONDOWN:
+                pos = pygame.mouse.get_pos()
+                if 200 <= pos[0] <= 400 and 300 <= pos[1] <= 350:
+                    return
+
+        draw_menu()
         pygame.display.flip()
 
 main_menu()
