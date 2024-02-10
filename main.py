@@ -33,10 +33,6 @@ def draw_text(text, font, color, x, y):
     text_rect.center = (x, y)
     screen.blit(text_surface, text_rect)
 
-def draw_exit_button():
-    pygame.draw.rect(screen, RED, [200, 400, 200, 50])
-    draw_text("Выход", font, BLACK, WIDTH // 2, 425)
-
 def draw_board(selected_numbers=None):
     for i in range(10):
         for j in range(10):
@@ -75,7 +71,7 @@ def remove_numbers(x1, y1, x2, y2):
             lines[x1] = lines[x1][:i] + " " + lines[x1][i+1:]
     elif y1 == y2:
         for i in range(min(x1, x2), max(x1, x2) + 1):
-            lines[i] = lines[i][:y1] + " " + lines[i][y1+1:]
+            lines[i] = lines[i][:y1] + " " +    lines[i][y1+1:]
     else:
         sum_positions = get_sum_positions()
         for pos1, pos2 in sum_positions:
