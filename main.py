@@ -15,14 +15,7 @@ HEIGHT = 600
 menu_screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Menu")
 
-def draw_menu():
-    menu_screen.fill(WHITE)
-    draw_text("Numbers 19", font, BLACK, WIDTH // 2, HEIGHT // 2 -90)
-    pygame.draw.rect(menu_screen, GREEN, [200, 300, 200, 50])
-    draw_text("Начать игру", font, BLACK, WIDTH // 2, 325)
-
-
-font = pygame.font.SysFont(None, 36)
+font = pygame.font.SysFont("helvetica", 36)
 
 def draw_text(text, font, color, x, y):
     text_surface = font.render(text, True, color)
@@ -34,10 +27,10 @@ game_screen = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("Игровое окно")
 
 numbers = []
-for i in range(1,9):
+for i in range(1,10):
     numbers.append(str(i))
 
-lines = lines = []
+lines = []
 for i in range(10):
     line = ""
     for j in range(10):
@@ -45,9 +38,11 @@ for i in range(10):
     lines.append(line)
 def draw_text(text, font, color, x, y):
     text_surface = font.render(text, True, color)
-    text_rect = text_surface.get_rect()
-    text_rect.center = (x, y)
-    game_screen.blit(text_surface, text_rect)
+    if text_surface is not None:
+        text_rect = text_surface.get_rect()
+        text_rect.center = (x, y)
+        menu_screen.blit(text_surface, text_rect)
+
 
 def draw_board(selected_numbers=None):
     for i in range(10):
@@ -77,7 +72,6 @@ def can_remove(x1, y1, x2, y2):
 def remove_numbers(x1, y1, x2, y2):
     if x1 < 0 or x1 >= len(lines) or y1 < 0 or y1 >= len(lines[0]) or x2 < 0 or x2 >= len(lines) or y2 < 0 or y2 >= len(lines[0]):
         return
-
     lines[x1] = lines[x1][:y1] + " " + lines[x1][y1+1:]
     lines[x2] = lines[x2][:y2] + " " + lines[x2][y2+1:]
 
