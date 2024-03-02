@@ -9,8 +9,8 @@ WHITE = (255, 255, 255)
 GRAY = (128, 128, 128)
 GREEN = (0, 255, 0)
 
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 1024
+SCREEN_WIDTH = 1920
+SCREEN_HEIGHT = 1080
 
 game_screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
 pygame.display.set_caption("Game Window")
@@ -39,7 +39,7 @@ def draw_board(selected_numbers=None):
                 if selected_numbers and (i, j) in selected_numbers:
                     color = GREEN
                 pygame.draw.rect(game_screen, color, [j * 50, i * 50, 50, 50])
-                draw_text(lines[i][j], font, WHITE, j * 50 + 25, i * 50 + 25)
+                draw_text(lines[i][j], font, WHITE, j * 50 + 25, i * 50 + 25 )
 
 def can_remove(x1, y1, x2, y2):
     if not (0 <= x1 < len(lines) and 0 <= y1 < len(lines[0]) and 0 <= x2 < len(lines) and 0 <= y2 < len(lines[0])):
@@ -51,7 +51,7 @@ def can_remove(x1, y1, x2, y2):
     num1 = int(lines[x1][y1])
     num2 = int(lines[x2][y2])
 
-    return num1 + num2 == 10
+    return num1 + num2 == 10 and (x1 == x2 or y1 == y2)
 
 def remove_numbers(x1, y1, x2, y2):
     if not (0 <= x1 < len(lines) and 0 <= y1 < len(lines[0]) and 0 <= x2 < len(lines) and 0 <= y2 < len(lines[0])):
