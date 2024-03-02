@@ -25,15 +25,15 @@ def draw_text(text, font, color, x, y):
 numbers = [str(i) for i in range(1, 10)]
 
 lines = []
-for _ in range(10):
+for _ in range(15):
     line = ""
-    for _ in range(10):
+    for _ in range(15):
         line += random.choice(numbers)
     lines.append(line)
 
 def draw_board(selected_numbers=None):
-    for i in range(10):
-        for j in range(10):
+    for i in range(15):
+        for j in range(15):
             if lines[i][j] != " ":
                 color = GRAY
                 if selected_numbers and (i, j) in selected_numbers:
