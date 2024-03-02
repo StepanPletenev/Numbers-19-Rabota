@@ -87,6 +87,10 @@ def game():
                     else:
                         selected_numbers = []
 
+            elif event.type == pygame.KEYDOWN:
+                if event.key == pygame.K_ESCAPE: 
+                  running = False
+
         game_screen.fill(WHITE)
         draw_board(selected_numbers)
 
@@ -99,3 +103,4 @@ def game():
     pygame.quit()
 
 game()
+
