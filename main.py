@@ -70,7 +70,10 @@ def game():
                 if 0 <= x < 10 and 0 <= y < 10:
                     if len(selected_numbers) < 2:
                         if lines[x][y] != " ":
-                            selected_numbers.append((x, y))
+                            if (x, y) in selected_numbers:  # Если уже выбрана эта цифра, снимаем выделение
+                                selected_numbers.remove((x, y))
+                            else:
+                                selected_numbers.append((x, y))
                     if len(selected_numbers) == 2:
                         x1, y1 = selected_numbers[0]
                         x2, y2 = selected_numbers[1]
@@ -90,4 +93,3 @@ def game():
         pygame.display.flip()
     pygame.quit()
 game()
-
