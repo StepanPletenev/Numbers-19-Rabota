@@ -50,7 +50,11 @@ def can_remove(x1, y1, x2, y2):
     num1 = int(lines[x1][y1])
     num2 = int(lines[x2][y2])
 
-    return (num1 + num2 == 10 or num1 == num2) and (x1 == x2 or y1 == y2)
+    if (num1 + num2 == 10 or num1 == num2) and ((x1 == x2 and abs(y1 - y2) == 1) or (y1 == y2 and abs(x1 - x2) == 1)):
+        return True
+
+    return False
+
 def remove_numbers(x1, y1, x2, y2):
     if not (0 <= x1 < len(lines) and 0 <= y1 < len(lines[0]) and 0 <= x2 < len(lines) and 0 <= y2 < len(lines[0])):
         return
