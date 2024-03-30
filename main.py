@@ -39,7 +39,6 @@ def draw_board(selected_numbers=None):
                 pygame.draw.rect(game_screen, color,[SCREEN_WIDTH // 2 - 350 + j * 50, SCREEN_HEIGHT // 2 - 350 + i * 50, 50, 50])
                 draw_text(lines[i][j], font, WHITE, SCREEN_WIDTH // 2 - 325 + j * 50, SCREEN_HEIGHT // 2 - 325 + i * 50)
 
-
 def can_remove(x1, y1, x2, y2):
     if not (0 <= x1 < len(lines) and 0 <= y1 < len(lines[0]) and 0 <= x2 < len(lines) and 0 <= y2 < len(lines[0])):
         return False
@@ -58,8 +57,17 @@ def can_remove(x1, y1, x2, y2):
 def remove_numbers(x1, y1, x2, y2):
     if not (0 <= x1 < len(lines) and 0 <= y1 < len(lines[0]) and 0 <= x2 < len(lines) and 0 <= y2 < len(lines[0])):
         return
-    lines[x1] = lines[x1][:y1] + " " + lines[x1][y1+1:]
-    lines[x2] = lines[x2][:y2] + " " + lines[x2][y2+1:]
+    lines[x1] = lines[x1][:y1] + " " + lines[x1][y1 + 1:]
+    lines[x2] = lines[x2][:y2] + " " + lines[x2][y2 + 1:]
+
+    for i in range(len(lines) - 1, 0, -1):
+        for j in range(len(lines[i])):
+            if lines[i][j] == " ":
+                for k in range(i - 1, -1, -1):
+                    if lines[k][j] != " ":
+                        lines[i] = lines[i][:j] + lines[k][j] + lines[i][j + 1:]
+                        lines[k] = lines[k][:j] + " " + lines[k][j + 1:]
+                        break
 def game():
     selected_numbers = []
     running = True
