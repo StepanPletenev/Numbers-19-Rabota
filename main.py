@@ -1,107 +1,96 @@
-import pygame
+import sys
 import random
+from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QLabel, QPushButton
 
-if __name__ == "__main__":
-    pygame.init()
 
-BLACK = (0, 0, 0)
-WHITE = (255, 255, 255)
-GRAY = (128, 128, 128)
-GREEN = (0, 255, 0)
+class NumberGame(QWidget):
 
-SCREEN_WIDTH = 1920
-SCREEN_HEIGHT = 1080
+    def __init__(self):
+        super().__init__()
 
-game_screen = pygame.display.set_mode((SCREEN_WIDTH, SCREEN_HEIGHT), pygame.FULLSCREEN)
-pygame.display.set_caption("Game Window")
+        self.initUI()
 
-font = pygame.font.SysFont("helvetica", 36)
+    def initUI(self):
+        self.setWindowTitle("Number Game")
+        self.setGeometry(100, 100, 600, 600)
 
-def draw_text(text, font, color, x, y):
-    text_surface = font.render(text, True, color)
-    text_rect = text_surface.get_rect(center=(x, y))
-    game_screen.blit(text_surface, text_rect)
+        self.layout = QGridLayout()
+        self.lines = []
+        self.selected_numbers = []
 
-numbers = [str(i) for i in range(1, 10)]
-lines = []
-for _ in range(10):
-    line = ""
-    for _ in range(10):
-        line += random.choice(numbers)
-    lines.append(line)
-def draw_board(selected_numbers=None):
-    for i in range(10):
-        for j in range(10):
-            if lines[i][j] != " ":
-                color = GRAY
-                if selected_numbers and (i, j) in selected_numbers:
-                    color = GREEN
-                pygame.draw.rect(game_screen, color,[SCREEN_WIDTH // 2 - 350 + j * 50, SCREEN_HEIGHT // 2 - 350 + i * 50, 50, 50])
-                draw_text(lines[i][j], font, WHITE, SCREEN_WIDTH // 2 - 325 + j * 50, SCREEN_HEIGHT // 2 - 325 + i * 50)
+        for i in range(10):
+            line = ""
+            for _ in range(10):
+                line += str(random.randint(1, 9))
+            self.lines.append(list(line))
 
-def can_remove(x1, y1, x2, y2):
-    if not (0 <= x1 < len(lines) and 0 <= y1 < len(lines[0]) and 0 <= x2 < len(lines) and 0 <= y2 < len(lines[0])):
+        for i in range(10):
+            for j in range(10):
+                btn = QPushButton(self)
+                btn.setText(self.lines[i][j])
+                btn.setStyleSheet("background-color: gray")
+                btn.clicked.connect(lambda checked, i=i, j=j: self.number_clicked(i, j))
+                self.layout.addWidget(btn, i, j)
+
+        self.setLayout(self.layout)
+
+    def number_clicked(self, x, y):
+        if (x, y) in self.selected_numbers:
+            self.selected_numbers.remove((x, y))
+        else:
+            self.selected_numbers.append((x, y))
+
+        if len(self.selected_numbers) == 2:
+            x1, y1 = self.selected_numbers[0]
+            x2, y2 = self.selected_numbers[1]
+            if self.can_remove(x1, y1, x2, y2):
+                self.remove_numbers(x1, y1, x2, y2)
+                self.selected_numbers = []
+            else:
+                self.selected_numbers = []
+
+        self.update_buttons()
+
+    def can_remove(self, x1, y1, x2, y2):
+        if (0 <= x1 < len(self.lines) and 0 <= y1 < len(self.lines[0])
+                and 0 <= x2 < len(self.lines) and 0 <= y2 < len(self.lines[0])):
+            if self.lines[x1][y1] != " " and self.lines[x2][y2] != " ":
+                num1 = int(self.lines[x1][y1])
+                num2 = int(self.lines[x2][y2])
+                if (num1 + num2 == 10 or num1 == num2) and (
+                        (x1 == x2 and abs(y1 - y2) == 1) or (y1 == y2 and abs(x1 - x2) == 1)):
+                    return True
         return False
 
-    if lines[x1][y1] == " " or lines[x2][y2] == " ":
-        return False
+    def remove_numbers(self, x1, y1, x2, y2):
+        self.lines[x1][y1] = " "
+        self.lines[x2][y2] = " "
 
-    num1 = int(lines[x1][y1])
-    num2 = int(lines[x2][y2])
+        for i in range(len(self.lines) - 1, 0, -1):
+            for j in range(len(self.lines[i])):
+                if self.lines[i][j] == " ":
+                    for k in range(i - 1, -1, -1):
+                        if self.lines[k][j] != " ":
+                            self.lines[i][j] = self.lines[k][j]
+                            self.lines[k][j] = " "
+                            break
 
-    if (num1 + num2 == 10 or num1 == num2) and ((x1 == x2 and abs(y1 - y2) == 1) or (y1 == y2 and abs(x1 - x2) == 1)):
-        return True
+        self.update_buttons()
 
-    return False
+    def update_buttons(self):
+        for i in range(10):
+            for j in range(10):
+                button = self.layout.itemAtPosition(i, j).widget()
+                if self.lines[i][j] != " ":
+                    button.setText(self.lines[i][j])
+                if (i, j) in self.selected_numbers:
+                    button.setStyleSheet("background-color: green")
+                else:
+                    button.setStyleSheet("background-color: gray")
 
-def remove_numbers(x1, y1, x2, y2):
-    if not (0 <= x1 < len(lines) and 0 <= y1 < len(lines[0]) and 0 <= x2 < len(lines) and 0 <= y2 < len(lines[0])):
-        return
-    lines[x1] = lines[x1][:y1] + " " + lines[x1][y1 + 1:]
-    lines[x2] = lines[x2][:y2] + " " + lines[x2][y2 + 1:]
 
-    for i in range(len(lines) - 1, 0, -1):
-        for j in range(len(lines[i])):
-            if lines[i][j] == " ":
-                for k in range(i - 1, -1, -1):
-                    if lines[k][j] != " ":
-                        lines[i] = lines[i][:j] + lines[k][j] + lines[i][j + 1:]
-                        lines[k] = lines[k][:j] + " " + lines[k][j + 1:]
-                        break
-def game():
-    selected_numbers = []
-    running = True
-    while running:
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.MOUSEBUTTONDOWN:
-                pos = pygame.mouse.get_pos()
-                x = (pos[1] - (SCREEN_HEIGHT // 2 - 350)) // 50
-                y = (pos[0] - (SCREEN_WIDTH // 2 - 350)) // 50
-                if 0 <= x < 10 and 0 <= y < 10:
-                    if len(selected_numbers) < 2:
-                        if lines[x][y] != " ":
-                            if (x, y) in selected_numbers:  # Если уже выбрана эта цифра, снимаем выделение
-                                selected_numbers.remove((x, y))
-                            else:
-                                selected_numbers.append((x, y))
-                    if len(selected_numbers) == 2:
-                        x1, y1 = selected_numbers[0]
-                        x2, y2 = selected_numbers[1]
-                        if can_remove(x1, y1, x2, y2):
-                            remove_numbers(x1, y1, x2, y2)
-                            selected_numbers = []
-                        else:
-                            selected_numbers = []
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_ESCAPE:
-                  running = False
-        game_screen.fill(WHITE)
-        draw_board(selected_numbers)
-        game_over = all(" " in line for line in lines)
-        if game_over:
-            draw_text("You Win!", font, BLACK, SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2)
-        pygame.display.flip()
-    pygame.quit()
-game()
+if __name__ == '__main__':
+    app = QApplication(sys.argv)
+    game = NumberGame()
+    game.show()
+    sys.exit(app.exec_())
