@@ -2,10 +2,8 @@ import sys
 import random
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton
 from PyQt5.QtCore import Qt
-
-
+from PyQt5.QtCore import QTimer
 class NumberGame(QWidget):
-
     def __init__(self):
         super().__init__()
         self.initUI()
@@ -32,6 +30,7 @@ class NumberGame(QWidget):
                 btn.setText(self.lines[i][j])
                 btn.setStyleSheet("background-color: gray")
                 btn.setFixedSize(50, 50)
+                btn.clicked.connect(lambda _, x=i, y=j: self.number_clicked(x, y))
                 self.layout.addWidget(btn, i, j)
 
         for i in range(10):
@@ -41,21 +40,25 @@ class NumberGame(QWidget):
         self.setLayout(self.layout)
 
     def number_clicked(self, x, y):
+        def delayed_remove():
+            self.remove_selected_numbers()
+
         if (x, y) in self.selected_numbers:
             self.selected_numbers.remove((x, y))
         else:
             self.selected_numbers.append((x, y))
 
         if len(self.selected_numbers) == 2:
-            x1, y1 = self.selected_numbers[0]
-            x2, y2 = self.selected_numbers[1]
-            if self.can_remove(x1, y1, x2, y2):
-                self.remove_numbers(x1, y1, x2, y2)
-                self.selected_numbers = []
-            else:
-                self.selected_numbers = []
+            QTimer.singleShot(1000, delayed_remove)  # Delaying the removal by 1000 milliseconds (1 second)
 
         self.update_buttons()
+
+    def remove_selected_numbers(self):
+        x1, y1 = self.selected_numbers[0]
+        x2, y2 = self.selected_numbers[1]
+        if self.can_remove(x1, y1, x2, y2):
+            self.remove_numbers(x1, y1, x2, y2)
+        self.selected_numbers = []
 
     def can_remove(self, x1, y1, x2, y2):
         if (0 <= x1 < len(self.lines) and 0 <= y1 < len(self.lines[0])
@@ -106,8 +109,7 @@ class NumberGame(QWidget):
     def closeEvent(self, event):
         sys.exit()
 
-
-if __name__ == '__main__':
+if __name__ =='__main__':
     app = QApplication(sys.argv)
     game = NumberGame()
     game.show()
