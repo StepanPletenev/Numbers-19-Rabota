@@ -1,13 +1,13 @@
 import sys
 import random
-from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QLabel, QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton
+from PyQt5.QtCore import Qt
 
 
 class NumberGame(QWidget):
 
     def __init__(self):
         super().__init__()
-
         self.initUI()
 
     def initUI(self):
@@ -15,6 +15,8 @@ class NumberGame(QWidget):
         self.setGeometry(100, 100, 600, 600)
 
         self.layout = QGridLayout()
+        self.layout.setSpacing(5)
+
         self.lines = []
         self.selected_numbers = []
 
@@ -29,8 +31,12 @@ class NumberGame(QWidget):
                 btn = QPushButton(self)
                 btn.setText(self.lines[i][j])
                 btn.setStyleSheet("background-color: gray")
-                btn.clicked.connect(lambda checked, i=i, j=j: self.number_clicked(i, j))
+                btn.setFixedSize(50, 50)
                 self.layout.addWidget(btn, i, j)
+
+        for i in range(10):
+            self.layout.setColumnMinimumWidth(i, 50)
+            self.layout.setRowMinimumHeight(i, 50)
 
         self.setLayout(self.layout)
 
@@ -58,24 +64,29 @@ class NumberGame(QWidget):
                 num1 = int(self.lines[x1][y1])
                 num2 = int(self.lines[x2][y2])
                 if (num1 + num2 == 10 or num1 == num2) and (
-                        (x1 == x2 and abs(y1 - y2) == 1) or (y1 == y2 and abs(x1 - x2) == 1)):
+                        (abs(x1 - x2) == 1 and y1 == y2) or (abs(y1 - y2) == 1 and x1 == x2)):
                     return True
         return False
 
     def remove_numbers(self, x1, y1, x2, y2):
         self.lines[x1][y1] = " "
         self.lines[x2][y2] = " "
-
-        for i in range(len(self.lines) - 1, 0, -1):
-            for j in range(len(self.lines[i])):
-                if self.lines[i][j] == " ":
-                    for k in range(i - 1, -1, -1):
-                        if self.lines[k][j] != " ":
-                            self.lines[i][j] = self.lines[k][j]
-                            self.lines[k][j] = " "
-                            break
-
         self.update_buttons()
+
+        for _ in range(2):
+            removed = False
+            for i in range(10):
+                for j in range(10):
+                    if self.lines[i][j] == " ":
+                        continue
+                    if (i > 0 and self.can_remove(i, j, i - 1, j)) or \
+                            (i < 9 and self.can_remove(i, j, i + 1, j)) or \
+                            (j > 0 and self.can_remove(i, j, i, j - 1)) or \
+                            (j < 9 and self.can_remove(i, j, i, j + 1)):
+                        self.remove_numbers(i, j, i, j)
+                        removed = True
+            if not removed:
+                break
 
     def update_buttons(self):
         for i in range(10):
@@ -87,6 +98,13 @@ class NumberGame(QWidget):
                     button.setStyleSheet("background-color: green")
                 else:
                     button.setStyleSheet("background-color: gray")
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.close()
+
+    def closeEvent(self, event):
+        sys.exit()
 
 
 if __name__ == '__main__':
