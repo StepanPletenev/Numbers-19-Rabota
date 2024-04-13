@@ -82,14 +82,8 @@ class NumberGame(QWidget):
             self.lines[i][y2] = self.lines[i - 1][y2]
         self.lines[0][y2] = str(random.randint(1, 9))
 
+        self.add_new_numbers()
         self.update_buttons()
-
-        button1 = self.layout.itemAtPosition(x1, y1).widget()
-        button2 = self.layout.itemAtPosition(x2, y2).widget()
-        button1.setStyleSheet("background-color: gray")
-        button1.setText(" ")
-        button2.setStyleSheet("background-color: gray")
-        button2.setText(" ")
 
     def add_new_numbers(self):
         for j in range(10):
@@ -109,13 +103,6 @@ class NumberGame(QWidget):
                     button.setStyleSheet("background-color: green")
                 else:
                     button.setStyleSheet("background-color: gray")
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
-            self.close()
-
-    def closeEvent(self, event):
-        sys.exit()
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
