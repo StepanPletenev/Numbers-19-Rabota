@@ -1,7 +1,7 @@
 import sys
 import random
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton
-from PyQt5.QtCore import Qt, QTimer
+from PyQt5.QtCore import Qt
 
 class NumberGame(QWidget):
     def __init__(self):
@@ -9,7 +9,7 @@ class NumberGame(QWidget):
         self.initUI()
 
     def initUI(self):
-        self.setWindowTitle("Number Game")
+        self.setWindowTitle("Number19")
         self.setGeometry(100, 100, 600, 600)
         self.layout = QGridLayout()
         self.layout.setSpacing(5)
@@ -39,10 +39,7 @@ class NumberGame(QWidget):
         self.setLayout(self.layout)
 
     def number_clicked(self, x, y):
-        def delayed_remove():
-            self.remove_selected_numbers()
-
-        if len(self.selected_numbers) == 2:  
+        if len(self.selected_numbers) == 2:
             return
 
         if (x, y) in self.selected_numbers:
@@ -51,9 +48,7 @@ class NumberGame(QWidget):
             self.selected_numbers.append((x, y))
 
         if len(self.selected_numbers) == 2:
-            QTimer.singleShot(1000, delayed_remove)
-
-        self.update_buttons()
+            self.remove_selected_numbers()
 
     def remove_selected_numbers(self):
         if len(self.selected_numbers) == 2:
@@ -79,6 +74,13 @@ class NumberGame(QWidget):
         self.lines[x1][y1] = " "
         self.lines[x2][y2] = " "
         self.update_buttons()
+
+        button1 = self.layout.itemAtPosition(x1, y1).widget()
+        button2 = self.layout.itemAtPosition(x2, y2).widget()
+        button1.setStyleSheet("background-color: gray")
+        button1.setText(" ")
+        button2.setStyleSheet("background-color: gray")
+        button2.setText(" ")
 
     def update_buttons(self):
         for i in range(10):
