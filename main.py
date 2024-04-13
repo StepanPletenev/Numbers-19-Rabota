@@ -40,6 +40,7 @@ class NumberGame(QWidget):
 
     def number_clicked(self, x, y):
         if len(self.selected_numbers) == 2:
+            self.remove_selected_numbers()
             return
 
         if (x, y) in self.selected_numbers:
@@ -47,8 +48,7 @@ class NumberGame(QWidget):
         else:
             self.selected_numbers.append((x, y))
 
-        if len(self.selected_numbers) == 2:
-            self.remove_selected_numbers()
+        self.update_buttons()
 
     def remove_selected_numbers(self):
         if len(self.selected_numbers) == 2:
