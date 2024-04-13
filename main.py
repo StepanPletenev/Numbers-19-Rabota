@@ -73,6 +73,15 @@ class NumberGame(QWidget):
     def remove_numbers(self, x1, y1, x2, y2):
         self.lines[x1][y1] = " "
         self.lines[x2][y2] = " "
+
+        for i in range(x1, 0, -1):
+            self.lines[i][y1] = self.lines[i - 1][y1]
+        self.lines[0][y1] = str(random.randint(1, 9))
+
+        for i in range(x2, 0, -1):
+            self.lines[i][y2] = self.lines[i - 1][y2]
+        self.lines[0][y2] = str(random.randint(1, 9))
+
         self.update_buttons()
 
         button1 = self.layout.itemAtPosition(x1, y1).widget()
@@ -81,6 +90,14 @@ class NumberGame(QWidget):
         button1.setText(" ")
         button2.setStyleSheet("background-color: gray")
         button2.setText(" ")
+
+    def add_new_numbers(self):
+        for j in range(10):
+            if self.lines[0][j] == " ":
+                self.lines[0][j] = str(random.randint(1, 9))
+                button = self.layout.itemAtPosition(0, j).widget()
+                button.setText(self.lines[0][j])
+                button.setStyleSheet("background-color: gray")
 
     def update_buttons(self):
         for i in range(10):
