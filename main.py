@@ -1,7 +1,7 @@
 import sys
 import random
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton
-from PyQt5.QtCore import Qt
+
 class NumberGame(QWidget):
     def __init__(self):
         super().__init__()
@@ -99,10 +99,7 @@ class NumberGame(QWidget):
                     button.setStyleSheet("background-color: gray")
                 else:
                     button.setText("")
-                    if i == 0:
-                        button.setStyleSheet("background-color: white")
-                    else:
-                        button.setStyleSheet("background-color: gray")
+                    button.setStyleSheet("background-color: gray")
 
                 if (i, j) in self.selected_numbers:
                     button.setStyleSheet("background-color: green")
