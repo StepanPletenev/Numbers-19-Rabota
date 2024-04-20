@@ -2,7 +2,6 @@ import sys
 import random
 from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton
 from PyQt5.QtCore import Qt
-
 class NumberGame(QWidget):
     def __init__(self):
         super().__init__()
@@ -70,6 +69,8 @@ class NumberGame(QWidget):
         return False
 
     def remove_numbers(self, x1, y1, x2, y2):
+        if x1 > x2 or (x1 == x2 and y1 > y2):
+            x1, y1, x2, y2 = x2, y2, x1, y1
         self.lines[x1][y1] = " "
         self.lines[x2][y2] = " "
 
@@ -80,6 +81,12 @@ class NumberGame(QWidget):
         for i in range(x2, 0, -1):
             self.lines[i][y2] = self.lines[i - 1][y2]
         self.lines[0][y2] = " "
+
+        if x1 == 0:
+            self.lines[x1][y1] = str(random.randint(1, 9))
+
+        if x2 == 0:
+            self.lines[x2][y2] = str(random.randint(1, 9))
 
         self.update_buttons()
 
@@ -92,7 +99,10 @@ class NumberGame(QWidget):
                     button.setStyleSheet("background-color: gray")
                 else:
                     button.setText("")
-                    button.setStyleSheet("background-color: white")
+                    if i == 0:
+                        button.setStyleSheet("background-color: white")
+                    else:
+                        button.setStyleSheet("background-color: gray")
 
                 if (i, j) in self.selected_numbers:
                     button.setStyleSheet("background-color: green")
