@@ -1,17 +1,18 @@
 import sys
 import random
-from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton
+from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton, QDesktopWidget
 
 class NumberGame(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
-
     def initUI(self):
         self.setWindowTitle("Number19")
-        self.setGeometry(100, 100, 700, 700)
+        self.setGeometry(100, 100, 800, 800)
         self.layout = QGridLayout()
-        self.layout.setSpacing(0)
+        self.layout.setSpacing(5)
+        self.layout.setContentsMargins(10, 10, 10, 10)
+
         self.lines = []
         self.selected_numbers = []
 
@@ -26,16 +27,20 @@ class NumberGame(QWidget):
                 btn = QPushButton(self)
                 btn.setText(self.lines[i][j])
                 btn.setStyleSheet("background-color: gray")
-                btn.setFixedSize(60, 60)
+                button_size = 70
+                btn.setFixedSize(button_size, button_size)
+
                 btn.clicked.connect(lambda _, x=i, y=j: self.number_clicked(x, y))
                 self.layout.addWidget(btn, i, j)
 
-        for i in range(10):
-            self.layout.setColumnMinimumWidth(i, 50)
-            self.layout.setRowMinimumHeight(i, 50)
-
         self.setLayout(self.layout)
+        self.move_center()
 
+    def move_center(self):
+        qr = self.frameGeometry()
+        cp = QDesktopWidget().availableGeometry().center()
+        qr.moveCenter(cp)
+        self.move(qr.topLeft())
     def number_clicked(self, x, y):
         if len(self.selected_numbers) == 2:
             self.remove_selected_numbers()
@@ -47,7 +52,6 @@ class NumberGame(QWidget):
             self.selected_numbers.append((x, y))
 
         self.update_buttons()
-
     def remove_selected_numbers(self):
         if len(self.selected_numbers) == 2:
             x1, y1 = self.selected_numbers[0]
@@ -88,7 +92,7 @@ class NumberGame(QWidget):
         for i in range(10):
             for j in range(10):
                 button = self.layout.itemAtPosition(i, j).widget()
-                if self.lines[i][j] != " ":
+                if self.lines[i][j] !=" ":
                     button.setText(self.lines[i][j])
                     button.setStyleSheet("background-color: gray")
                 else:
