@@ -10,10 +10,9 @@ class NumberGame(QWidget):
 
     def initUI(self):
         self.setWindowTitle("Number19")
-        self.setGeometry(100, 100, 600, 600)
+        self.setGeometry(100, 100, 700, 700)
         self.layout = QGridLayout()
-        self.layout.setSpacing(5)
-
+        self.layout.setSpacing(0)
         self.lines = []
         self.selected_numbers = []
 
@@ -28,7 +27,7 @@ class NumberGame(QWidget):
                 btn = QPushButton(self)
                 btn.setText(self.lines[i][j])
                 btn.setStyleSheet("background-color: gray")
-                btn.setFixedSize(50, 50)
+                btn.setFixedSize(60, 60)
                 btn.clicked.connect(lambda _, x=i, y=j: self.number_clicked(x, y))
                 self.layout.addWidget(btn, i, j)
 
@@ -45,7 +44,7 @@ class NumberGame(QWidget):
 
         if (x, y) in self.selected_numbers:
             self.selected_numbers.remove((x, y))
-        else:
+        elif self.lines[x][y] != " ":
             self.selected_numbers.append((x, y))
 
         self.update_buttons()
@@ -76,22 +75,13 @@ class NumberGame(QWidget):
 
         for i in range(x1, 0, -1):
             self.lines[i][y1] = self.lines[i - 1][y1]
-        self.lines[0][y1] = str(random.randint(1, 9))
+        self.lines[0][y1] = " "
 
         for i in range(x2, 0, -1):
             self.lines[i][y2] = self.lines[i - 1][y2]
-        self.lines[0][y2] = str(random.randint(1, 9))
+        self.lines[0][y2] = " "
 
-        self.add_new_numbers()
         self.update_buttons()
-
-    def add_new_numbers(self):
-        for j in range(10):
-            if self.lines[0][j] == " ":
-                self.lines[0][j] = str(random.randint(1, 9))
-                button = self.layout.itemAtPosition(0, j).widget()
-                button.setText(self.lines[0][j])
-                button.setStyleSheet("background-color: gray")
 
     def update_buttons(self):
         for i in range(10):
@@ -99,10 +89,14 @@ class NumberGame(QWidget):
                 button = self.layout.itemAtPosition(i, j).widget()
                 if self.lines[i][j] != " ":
                     button.setText(self.lines[i][j])
+                    button.setStyleSheet("background-color: gray")
+                else:
+                    button.setText("")
+                    button.setStyleSheet("background-color: white")
+
                 if (i, j) in self.selected_numbers:
                     button.setStyleSheet("background-color: green")
-                else:
-                    button.setStyleSheet("background-color: gray")
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
