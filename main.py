@@ -82,12 +82,6 @@ class NumberGame(QWidget):
             self.lines[i][y2] = self.lines[i - 1][y2]
         self.lines[0][y2] = " "
 
-        if x1 == 0:
-            self.lines[x1][y1] = str(random.randint(1, 9))
-
-        if x2 == 0:
-            self.lines[x2][y2] = str(random.randint(1, 9))
-
         self.update_buttons()
 
     def update_buttons(self):
