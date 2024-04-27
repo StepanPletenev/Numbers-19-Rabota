@@ -1,18 +1,26 @@
 import sys
 import random
-from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton, QDesktopWidget
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QApplication, QWidget, QGridLayout, QPushButton, QDesktopWidget, QLayout
 
 class NumberGame(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
+
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.closeEvent(event)
+
+    def closeEvent(self, event):
+        sys.exit()
     def initUI(self):
         self.setWindowTitle("Number19")
         self.setGeometry(100, 100, 800, 800)
         self.layout = QGridLayout()
         self.layout.setSpacing(5)
         self.layout.setContentsMargins(10, 10, 10, 10)
-
+        self.layout.setSizeConstraint(QLayout.SetFixedSize)
         self.lines = []
         self.selected_numbers = []
 
@@ -29,13 +37,11 @@ class NumberGame(QWidget):
                 btn.setStyleSheet("background-color: gray")
                 button_size = 70
                 btn.setFixedSize(button_size, button_size)
-
                 btn.clicked.connect(lambda _, x=i, y=j: self.number_clicked(x, y))
                 self.layout.addWidget(btn, i, j)
 
         self.setLayout(self.layout)
         self.move_center()
-
     def move_center(self):
         qr = self.frameGeometry()
         cp = QDesktopWidget().availableGeometry().center()
