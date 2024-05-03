@@ -10,11 +10,11 @@ class MainMenu(QMainWindow):
         self.setWindowTitle("Number19")
         self.setGeometry(100, 100, 1000, 800)
 
-        game_title = QLabel("<h1>Number19</h1>", self)
-        game_title.setGeometry(400, 200, 200, 100)
+        game_title = QLabel("<h1> Добро пожаловать в головоломку Number 19</h1>", self)
+        game_title.setGeometry(250, 200, 625, 100)
 
-        start_button = QPushButton("Start Game", self)
-        start_button.setGeometry(400, 300, 200, 100)
+        start_button = QPushButton("Начать игру", self)
+        start_button.setGeometry(300, 300, 400, 100)
         start_button.clicked.connect(self.start_game)
 
     def start_game(self):
