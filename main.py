@@ -1,18 +1,19 @@
 import sys
 import random
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QGridLayout, QPushButton, QDesktopWidget, QLayout
+from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QGridLayout, QPushButton, QDesktopWidget, QLayout, QLabel
 
 class MainMenu(QMainWindow):
     def __init__(self):
         super().__init__()
 
-        self.setWindowTitle("Main Menu")
-        self.setGeometry(100, 100, 400, 200)
+        self.setWindowTitle("Number19")
+        self.setGeometry(100, 100, 1000, 800)
 
         start_button = QPushButton("Start Game", self)
-        start_button.setGeometry(150, 75, 100, 50)
+        start_button.setGeometry(400, 300, 200, 100)
         start_button.clicked.connect(self.start_game)
+
     def start_game(self):
         self.hide()
         app = QApplication.instance()
@@ -34,7 +35,7 @@ class NumberGame(QWidget):
 
     def initUI(self):
         self.setWindowTitle("Number19")
-        self.setGeometry(100, 100, 800, 800)
+        self.setGeometry(100, 100, 1000, 800)
         self.layout = QGridLayout()
         self.layout.setSpacing(5)
         self.layout.setContentsMargins(10, 10, 10, 10)
@@ -63,10 +64,10 @@ class NumberGame(QWidget):
 
         timer_label_layout = QGridLayout()
         self.timer_label = QPushButton("00:00", self)
-        self.timer_label.setFixedSize(80, 30)
+        self.timer_label.setFixedSize(150, 30)
         self.timer_label.setStyleSheet("background-color: white; font-size: 20px;")
         timer_label_layout.addWidget(self.timer_label, 0, 0, 1, 1)
-        self.layout.addLayout(timer_label_layout, 11, 9, 1, 1)
+        self.layout.addLayout(timer_label_layout, 4, 10, 1, 1)
 
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_timer)
@@ -152,6 +153,6 @@ class NumberGame(QWidget):
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    game = NumberGame()
-    game.show()
+    menu = MainMenu()
+    menu.show()
     sys.exit(app.exec_())
