@@ -10,16 +10,17 @@ class MainMenu(QMainWindow):
         self.setWindowTitle("Number19")
         self.setGeometry(100, 100, 1000, 800)
 
+        game_title = QLabel("<h1>Number19</h1>", self)
+        game_title.setGeometry(400, 200, 200, 100)
+
         start_button = QPushButton("Start Game", self)
         start_button.setGeometry(400, 300, 200, 100)
         start_button.clicked.connect(self.start_game)
 
     def start_game(self):
         self.hide()
-        app = QApplication.instance()
-        game = NumberGame()
-        game.show()
-        app.exec_()
+        self.number_game = NumberGame()
+        self.number_game.show()
 
 class NumberGame(QWidget):
     def __init__(self):
@@ -68,6 +69,12 @@ class NumberGame(QWidget):
         self.timer_label.setStyleSheet("background-color: white; font-size: 20px;")
         timer_label_layout.addWidget(self.timer_label, 0, 0, 1, 1)
         self.layout.addLayout(timer_label_layout, 4, 10, 1, 1)
+
+        exit_button = QPushButton("Выход", self)
+        exit_button.setFixedSize(150, 30)
+        exit_button.setStyleSheet("background-color: white; font-size: 20px;")
+        exit_button.clicked.connect(lambda _: self.close())
+        self.layout.addWidget(exit_button, 5, 10, 1, 1)
 
         self.timer.setInterval(1000)
         self.timer.timeout.connect(self.update_timer)
