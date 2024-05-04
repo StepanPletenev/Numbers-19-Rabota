@@ -2,7 +2,6 @@ import sys
 import random
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QGridLayout, QPushButton, QDesktopWidget, QLayout, QLabel
-
 class MainMenu(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -17,23 +16,26 @@ class MainMenu(QMainWindow):
         start_button.setGeometry(300, 300, 400, 100)
         start_button.clicked.connect(self.start_game)
 
+    def keyPressEvent(self, event):
+        if event.key() == Qt.Key_Escape:
+            self.close()
+
+    def closeEvent(self, event):
+        self.close()
+
     def start_game(self):
         self.hide()
         self.number_game = NumberGame()
         self.number_game.show()
-
 class NumberGame(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
-
-    def keyPressEvent(self, event):
-        if event.key() == Qt.Key_Escape:
-            self.closeEvent(event)
+        self.menu = MainMenu()
 
     def closeEvent(self, event):
-        sys.exit()
-
+        self.hide()
+        self.menu.show()
     def initUI(self):
         self.setWindowTitle("Number19")
         self.setGeometry(100, 100, 1000, 800)
