@@ -122,8 +122,10 @@ class NumberGame(QWidget):
                 num2 = int(self.lines[x2][y2])
                 if (num1 + num2 == 10 or num1 == num2) and (
                         (abs(x1 - x2) == 1 and y1 == y2) or (abs(y1 - y2) == 1 and x1 == x2)
-                        or (abs(x1 - x2) == 2 and y1 == y2 and self.lines[x1 + (x2 - x1) // 2][y1] == " ")
-                        or (abs(y1 - y2) == 2 and x1 == x2 and self.lines[x1][y1 + (y2 - y1) // 2] == " ")):
+                        or (abs(x1 - x2) > 1 and y1 == y2 and all(
+                    self.lines[i][y1] == " " for i in range(min(x1, x2) + 1, max(x1, x2))))
+                        or (abs(y1 - y2) > 1 and x1 == x2 and all(
+                    self.lines[x1][i] == " " for i in range(min(y1, y2) + 1, max(y1, y2))))):
                     return True
         return False
 
