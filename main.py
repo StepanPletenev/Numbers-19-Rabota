@@ -8,12 +8,14 @@ class MainMenu(QMainWindow):
 
         self.setWindowTitle("Number19")
         self.setGeometry(100, 100, 1000, 800)
+        self.setStyleSheet("background-color: #BF9730")
 
         game_title = QLabel("<h1> Добро пожаловать в головоломку Number 19</h1>", self)
         game_title.setGeometry(250, 200, 625, 100)
 
         start_button = QPushButton("Начать игру", self)
         start_button.setGeometry(300, 300, 400, 100)
+        start_button.setStyleSheet("background-color: #A65900; font-size: 18px;")
         start_button.clicked.connect(self.start_game)
 
     def keyPressEvent(self, event):
@@ -40,7 +42,7 @@ class NumberGame(QWidget):
         self.setWindowTitle("Number19")
         self.setGeometry(100, 100, 1000, 800)
         self.layout = QGridLayout()
-        self.layout.setSpacing(5)
+        self.layout.setSpacing(0)
         self.layout.setContentsMargins(10, 10, 10, 10)
         self.layout.setSizeConstraint(QLayout.SetFixedSize)
         self.lines = []
@@ -59,7 +61,7 @@ class NumberGame(QWidget):
             for j in range(10):
                 btn = QPushButton(self)
                 btn.setText(self.lines[i][j])
-                btn.setStyleSheet("background-color: gray")
+                btn.setStyleSheet("background-color: #BF9730")
                 button_size = 70
                 btn.setFixedSize(button_size, button_size)
                 btn.clicked.connect(lambda _, x=i, y=j: self.number_clicked(x, y))
@@ -68,13 +70,13 @@ class NumberGame(QWidget):
         timer_label_layout = QGridLayout()
         self.timer_label = QPushButton("00:00", self)
         self.timer_label.setFixedSize(150, 30)
-        self.timer_label.setStyleSheet("background-color: white; font-size: 20px;")
+        self.timer_label.setStyleSheet("background-color: #A65900; font-size: 20px;")
         timer_label_layout.addWidget(self.timer_label, 0, 0, 1, 1)
         self.layout.addLayout(timer_label_layout, 4, 10, 1, 1)
 
         exit_button = QPushButton("Выход", self)
         exit_button.setFixedSize(150, 30)
-        exit_button.setStyleSheet("background-color: white; font-size: 20px;")
+        exit_button.setStyleSheet("background-color: #A65900; font-size: 18px;")
         exit_button.clicked.connect(lambda _: self.close())
         self.layout.addWidget(exit_button, 5, 10, 1, 1)
 
@@ -145,7 +147,7 @@ class NumberGame(QWidget):
                 button = self.layout.itemAtPosition(i, j).widget()
                 if self.lines[i][j] != " ":
                     button.setText(self.lines[i][j])
-                    button.setStyleSheet("background-color: gray")
+                    button.setStyleSheet("background-color: #BF9730")
                 else:
                     button.setText("")
                     button.setFixedSize(0, 0)
