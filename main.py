@@ -2,6 +2,7 @@ import sys
 import random
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QGridLayout, QPushButton, QDesktopWidget, QLayout, QLabel
+
 class MainMenu(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -29,15 +30,18 @@ class MainMenu(QMainWindow):
         self.hide()
         self.number_game = NumberGame()
         self.number_game.show()
+
 class NumberGame(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
         self.menu = MainMenu()
+        self.win_message = None
 
     def closeEvent(self, event):
         self.hide()
         self.menu.show()
+
     def initUI(self):
         self.setWindowTitle("Number19")
         self.setGeometry(100, 100, 1000, 800)
@@ -159,12 +163,43 @@ class NumberGame(QWidget):
                         "background-color: white")
                 if (i, j) in self.selected_numbers:
                     button.setStyleSheet("background-color: green")
+                self.check_for_win()
 
     def update_timer(self):
         self.time += 1
         minutes = self.time // 60
         seconds = self.time % 60
         self.timer_label.setText(f"{minutes:02}:{seconds:02}")
+
+    def check_for_win(self):
+        for i in range(10):
+            for j in range(10):
+                if self.lines[i][j] != " ":
+                    for x in range(10):
+                        for y in range(10):
+                            if self.can_remove(i,j,x,y):
+                                return False
+        self.timer.stop()
+        if self.win_message is None:
+            self.win_message = WinMessage()
+        self.win_message.show()
+
+class WinMessage(QWidget):
+    def __init__(self):
+        super().__init__()
+        self.initUI()
+
+    def initUI(self):
+        self.setWindowTitle("Вы выиграли!")
+        self.setGeometry(300, 300, 300, 200)
+        self.setStyleSheet("background-color: #BF9730")
+
+        win_label = QLabel("<h1>Вы выиграли!</h1>", self)
+        win_label.setGeometry(50, 50, 200, 100)
+        close_button = QPushButton("Закрыть", self)
+        close_button.setGeometry(100, 150, 100, 30)
+        close_button.setStyleSheet("background-color: #A65900; font-size: 18px;")
+        close_button.clicked.connect(self.close)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
