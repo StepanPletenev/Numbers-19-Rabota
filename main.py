@@ -57,6 +57,7 @@ class NumberGame(QWidget):
     def initUI(self):
         self.setWindowTitle("Number19")
         self.setGeometry(100, 100, 1000, 800)
+        self.setFixedSize(self.width(), self.height())
         self.layout = QGridLayout()
         self.layout.setSpacing(0)
         self.layout.setContentsMargins(10, 10, 10, 10)
@@ -195,9 +196,10 @@ class NumberGame(QWidget):
                             if self.can_remove(i, j, x, y):
                                 return False
         self.timer.stop()
-        win_label = QLabel("<h1>Игра окончена!</h1>", self)
-        win_label.setGeometry(250, 200, 625, 100)
-        self.layout.addWidget(win_label, 3, 0, 1, 10)
+        self.win_message = QLabel("<h1>Игра окончена!</h1>", self)
+        self.win_message.setAlignment(Qt.AlignCenter)
+        self.win_message.setStyleSheet("font-size: 36px; color: black")
+        self.layout.addWidget(self.win_message, 3, 0, 1, 10)
         self.game_over = True
 
 
