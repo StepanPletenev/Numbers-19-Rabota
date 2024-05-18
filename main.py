@@ -12,7 +12,7 @@ class MainMenu(QMainWindow):
         self.setStyleSheet("background-color: #BF9730")
         self.setFixedSize(self.width(), self.height())
 
-        game_title = QLabel("<h1> Добро пожаловать в головоломку Number 19</h1>", self)
+        game_title = QLabel("<h1>Добро пожаловать в головоломку Number 19</h1>", self)
         game_title.setGeometry(250, 200, 625, 100)
 
         start_button = QPushButton("Начать игру", self)
@@ -181,42 +181,9 @@ class NumberGame(QWidget):
                             if self.can_remove(i,j,x,y):
                                 return False
         self.timer.stop()
-        if self.win_message is None:
-            self.win_message = WinMessage()
-        self.win_message.show()
-
-class WinMessage(QWidget):
-    def __init__(self):
-        super().__init__()
-        self.initUI()
-        self.menu = MainMenu()
-
-    def initUI(self):
-        self.setWindowTitle("Вы выиграли!")
-        self.setGeometry(300, 300, 300, 200)
-        self.setStyleSheet("background-color: #BF9730")
-        self.setFixedSize(self.width(), self.height()) 
-
-        win_label = QLabel("<h1>Вы выиграли!</h1>", self)
-        win_label.setGeometry(50, 50, 200, 100)
-
-        close_button = QPushButton("Закрыть", self)
-        close_button.setGeometry(100, 150, 100, 30)
-        close_button.setStyleSheet("background-color: #A65900; font-size: 18px;")
-        close_button.clicked.connect(self.close)
-
-        restart_button = QPushButton("Играть снова", self)
-        restart_button.setGeometry(100, 100, 100, 30)
-        restart_button.setStyleSheet("background-color: #A65900; font-size: 18px;")
-        restart_button.clicked.connect(self.restart_game)
-
-    def close(self):
-        self.hide()
-        self.menu.show()
-
-    def restart_game(self):
-        self.hide()
-        self.menu.start_game()
+        win_label = QLabel("<h1>Игра окончена!</h1>", self)
+        win_label.setGeometry(250, 200, 625, 100)
+        self.layout.addWidget(win_label, 3, 0, 1, 10)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
