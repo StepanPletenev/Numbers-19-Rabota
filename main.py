@@ -3,6 +3,7 @@ import random
 from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QGridLayout, QPushButton, QDesktopWidget, QLayout, QLabel
 
+
 class MainMenu(QMainWindow):
     def __init__(self):
         super().__init__()
@@ -32,12 +33,14 @@ class MainMenu(QMainWindow):
         self.number_game = NumberGame()
         self.number_game.show()
 
+
 class NumberGame(QWidget):
     def __init__(self):
         super().__init__()
         self.initUI()
         self.menu = MainMenu()
         self.win_message = None
+        self.game_over = False
 
     def closeEvent(self, event):
         self.hide()
@@ -99,6 +102,8 @@ class NumberGame(QWidget):
         self.move(qr.topLeft())
 
     def number_clicked(self, x, y):
+        if self.game_over:
+            return
         if len(self.selected_numbers) == 2:
             self.remove_selected_numbers()
             return
@@ -184,6 +189,8 @@ class NumberGame(QWidget):
         win_label = QLabel("<h1>Игра окончена!</h1>", self)
         win_label.setGeometry(250, 200, 625, 100)
         self.layout.addWidget(win_label, 3, 0, 1, 10)
+        self.game_over = True
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
