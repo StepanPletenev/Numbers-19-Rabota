@@ -1,13 +1,20 @@
 import sys
 import random
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import QMainWindow, QApplication, QWidget, QGridLayout, QPushButton, QDesktopWidget, QLayout, QLabel
+from PyQt5.QtWidgets import (QMainWindow, QApplication, QWidget, QGridLayout, QPushButton, QDesktopWidget, QLayout,
+                             QLabel)
 
 
 class MainMenu(QMainWindow):
+    def start_game(self):
+        self.hide()
+        self.number_game = NumberGame()
+        self.number_game.show()
+
     def __init__(self):
         super().__init__()
 
+        self.number_game = None
         self.setWindowTitle("Number19")
         self.setGeometry(100, 100, 1000, 800)
         self.setStyleSheet("background-color: #BF9730")
@@ -28,15 +35,16 @@ class MainMenu(QMainWindow):
     def closeEvent(self, event):
         self.close()
 
-    def start_game(self):
-        self.hide()
-        self.number_game = NumberGame()
-        self.number_game.show()
-
 
 class NumberGame(QWidget):
     def __init__(self):
         super().__init__()
+        self.timer_label = None
+        self.lines = None
+        self.layout = None
+        self.selected_numbers = None
+        self.time = None
+        self.timer = None
         self.initUI()
         self.menu = MainMenu()
         self.win_message = None
@@ -131,11 +139,12 @@ class NumberGame(QWidget):
                 num1 = int(self.lines[x1][y1])
                 num2 = int(self.lines[x2][y2])
                 if (num1 + num2 == 10 or num1 == num2) and (
-                        (abs(x1 - x2) == 1 and y1 == y2) or (abs(y1 - y2) == 1 and x1 == x2)
-                        or (abs(x1 - x2) > 1 and y1 == y2 and all(
-                    self.lines[i][y1] == " " for i in range(min(x1, x2) + 1, max(x1, x2))))
-                        or (abs(y1 - y2) > 1 and x1 == x2 and all(
-                    self.lines[x1][i] == " " for i in range(min(y1, y2) + 1, max(y1, y2))))):
+                        (abs(x1 - x2) == 1 and y1 == y2) or
+                        (abs(y1 - y2) == 1 and x1 == x2) or
+                        (abs(x1 - x2) > 1 and y1 == y2 and all(
+                            self.lines[i][y1] == " " for i in range(min(x1, x2) + 1, max(x1, x2)))) or
+                        (abs(y1 - y2) > 1 and x1 == x2 and all(
+                            self.lines[x1][i] == " " for i in range(min(y1, y2) + 1, max(y1, y2))))):
                     return True
         return False
 
@@ -183,7 +192,7 @@ class NumberGame(QWidget):
                 if self.lines[i][j] != " ":
                     for x in range(10):
                         for y in range(10):
-                            if self.can_remove(i,j,x,y):
+                            if self.can_remove(i, j, x, y):
                                 return False
         self.timer.stop()
         win_label = QLabel("<h1>Игра окончена!</h1>", self)
