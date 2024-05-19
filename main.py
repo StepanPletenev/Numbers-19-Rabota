@@ -1,8 +1,8 @@
 import sys
 import random
 from PyQt5.QtCore import Qt, QTimer
-from PyQt5.QtWidgets import (QMainWindow, QApplication, QWidget, QGridLayout, QPushButton, QDesktopWidget, QLayout,
-                             QLabel)
+from PyQt5.QtWidgets import (QMainWindow, QApplication, QWidget, QGridLayout,
+                             QPushButton, QDesktopWidget, QLayout, QLabel)
 
 
 class MainMenu(QMainWindow):
@@ -20,12 +20,14 @@ class MainMenu(QMainWindow):
         self.setStyleSheet("background-color: #BF9730")
         self.setFixedSize(self.width(), self.height())
 
-        game_title = QLabel("<h1>Добро пожаловать в головоломку Number 19</h1>", self)
+        game_title = QLabel(
+            "<h1>Добро пожаловать в головоломку Number 19</h1>", self)
         game_title.setGeometry(250, 200, 625, 100)
 
         start_button = QPushButton("Начать игру", self)
         start_button.setGeometry(300, 300, 400, 100)
-        start_button.setStyleSheet("background-color: #A65900; font-size: 18px;")
+        start_button.setStyleSheet(
+            "background-color: #A65900; font-size: 18px;")
         start_button.clicked.connect(self.start_game)
 
     def keyPressEvent(self, event):
@@ -49,6 +51,7 @@ class NumberGame(QWidget):
         self.menu = MainMenu()
         self.win_message = None
         self.game_over = False
+        self.remaining_squares = 100
 
     def closeEvent(self, event):
         self.hide()
@@ -87,13 +90,15 @@ class NumberGame(QWidget):
         timer_label_layout = QGridLayout()
         self.timer_label = QPushButton("00:00", self)
         self.timer_label.setFixedSize(150, 30)
-        self.timer_label.setStyleSheet("background-color: #A65900; font-size: 20px;")
+        self.timer_label.setStyleSheet(
+            "background-color: #A65900; font-size: 20px;")
         timer_label_layout.addWidget(self.timer_label, 0, 0, 1, 1)
         self.layout.addLayout(timer_label_layout, 4, 10, 1, 1)
 
         exit_button = QPushButton("Выход", self)
         exit_button.setFixedSize(150, 30)
-        exit_button.setStyleSheet("background-color: #A65900; font-size: 18px;")
+        exit_button.setStyleSheet(
+            "background-color: #A65900; font-size: 18px;")
         exit_button.clicked.connect(lambda _: self.close())
         self.layout.addWidget(exit_button, 5, 10, 1, 1)
 
@@ -134,8 +139,9 @@ class NumberGame(QWidget):
             self.update_buttons()
 
     def can_remove(self, x1, y1, x2, y2):
-        if (0 <= x1 < len(self.lines) and 0 <= y1 < len(self.lines[0])
-                and 0 <= x2 < len(self.lines) and 0 <= y2 < len(self.lines[0])):
+        if (0 <= x1 < len(self.lines) and 0 <= y1 < len(
+                self.lines[0]) and 0 <= x2 < len(self.lines) and
+                0 <= y2 < len(self.lines[0])):
             if self.lines[x1][y1] != " " and self.lines[x2][y2] != " ":
                 num1 = int(self.lines[x1][y1])
                 num2 = int(self.lines[x2][y2])
@@ -143,9 +149,11 @@ class NumberGame(QWidget):
                         (abs(x1 - x2) == 1 and y1 == y2) or
                         (abs(y1 - y2) == 1 and x1 == x2) or
                         (abs(x1 - x2) > 1 and y1 == y2 and all(
-                            self.lines[i][y1] == " " for i in range(min(x1, x2) + 1, max(x1, x2)))) or
+                            self.lines[i][y1] == " " for i in range(
+                                min(x1, x2) + 1, max(x1, x2)))) or
                         (abs(y1 - y2) > 1 and x1 == x2 and all(
-                            self.lines[x1][i] == " " for i in range(min(y1, y2) + 1, max(y1, y2))))):
+                            self.lines[x1][i] == " " for i in range(
+                                min(y1, y2) + 1, max(y1, y2))))):
                     return True
         return False
 
@@ -163,6 +171,7 @@ class NumberGame(QWidget):
             self.lines[i][y2] = self.lines[i - 1][y2]
         self.lines[0][y2] = " "
 
+        self.remaining_squares -= 2
         self.update_buttons()
 
     def update_buttons(self):
@@ -171,7 +180,8 @@ class NumberGame(QWidget):
                 button = self.layout.itemAtPosition(i, j).widget()
                 if self.lines[i][j] != " ":
                     button.setText(self.lines[i][j])
-                    button.setStyleSheet("background-color: #BF9730")
+                    button.setStyleSheet(
+                        "background-color: #BF9730")
                 else:
                     button.setText("")
                     button.setFixedSize(0, 0)
@@ -196,9 +206,12 @@ class NumberGame(QWidget):
                             if self.can_remove(i, j, x, y):
                                 return False
         self.timer.stop()
-        self.win_message = QLabel("<h1>Игра окончена!</h1>", self)
+        self.win_message = QLabel(
+            f"<h1>Игра окончена!</h1>\n"
+            f"<h2>Осталось {self.remaining_squares} {'квадрат' if self.remaining_squares == 1 else 'квадрата' if 1 < self.remaining_squares < 5 else 'квадратов'}</h2>", self)
         self.win_message.setAlignment(Qt.AlignCenter)
-        self.win_message.setStyleSheet("font-size: 36px; color: black")
+        self.win_message.setStyleSheet(
+            "font-size: 36px; color: black")
         self.layout.addWidget(self.win_message, 3, 0, 1, 10)
         self.game_over = True
 
