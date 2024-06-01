@@ -25,6 +25,8 @@ class MainMenu(QMainWindow):
         game_title.setGeometry(250, 200, 625, 100)
 
         start_button = QPushButton("Начать игру", self)
+        start_button.setFocusPolicy(Qt.NoFocus)
+        start_button.setShortcutEnabled(False)
         start_button.setGeometry(300, 300, 400, 100)
         start_button.setStyleSheet(
             "background-color: #A65900; font-size: 18px;")
@@ -80,6 +82,8 @@ class NumberGame(QWidget):
         for i in range(10):
             for j in range(10):
                 btn = QPushButton(self)
+                btn.setFocusPolicy(Qt.NoFocus)
+                btn.setShortcutEnabled(False)
                 btn.setText(self.lines[i][j])
                 btn.setStyleSheet("background-color: #BF9730")
                 button_size = 70
@@ -92,10 +96,14 @@ class NumberGame(QWidget):
         self.timer_label.setFixedSize(150, 30)
         self.timer_label.setStyleSheet(
             "background-color: #A65900; font-size: 20px;")
+        self.timer_label.setFocusPolicy(Qt.NoFocus) 
+        self.timer_label.setShortcutEnabled(False)
         timer_label_layout.addWidget(self.timer_label, 0, 0, 1, 1)
         self.layout.addLayout(timer_label_layout, 4, 10, 1, 1)
 
         exit_button = QPushButton("Выход", self)
+        exit_button.setFocusPolicy(Qt.NoFocus)
+        exit_button.setShortcutEnabled(False)
         exit_button.setFixedSize(150, 30)
         exit_button.setStyleSheet(
             "background-color: #A65900; font-size: 18px;")
