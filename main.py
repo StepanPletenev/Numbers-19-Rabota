@@ -15,13 +15,13 @@ class MainMenu(QMainWindow):
         super().__init__()
 
         self.number_game = None
-        self.setWindowTitle("Number19")
+        self.setWindowTitle("Numbers19")
         self.setGeometry(100, 100, 1000, 800)
         self.setStyleSheet("background-color: #BF9730")
         self.setFixedSize(self.width(), self.height())
 
         game_title = QLabel(
-            "<h1>Добро пожаловать в головоломку Number 19</h1>", self)
+            "<h1>Добро пожаловать в головоломку Numbers 19</h1>", self)
         game_title.setGeometry(250, 200, 625, 100)
 
         start_button = QPushButton("Начать игру", self)
@@ -60,7 +60,7 @@ class NumberGame(QWidget):
         self.menu.show()
 
     def initUI(self):
-        self.setWindowTitle("Number19")
+        self.setWindowTitle("Numbers19")
         self.setGeometry(100, 100, 1000, 800)
         self.setFixedSize(self.width(), self.height())
         self.layout = QGridLayout()
