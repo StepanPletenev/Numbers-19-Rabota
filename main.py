@@ -96,7 +96,7 @@ class NumberGame(QWidget):
         self.timer_label.setFixedSize(150, 30)
         self.timer_label.setStyleSheet(
             "background-color: #A65900; font-size: 20px;")
-        self.timer_label.setFocusPolicy(Qt.NoFocus) 
+        self.timer_label.setFocusPolicy(Qt.NoFocus)
         self.timer_label.setShortcutEnabled(False)
         timer_label_layout.addWidget(self.timer_label, 0, 0, 1, 1)
         self.layout.addLayout(timer_label_layout, 4, 10, 1, 1)
